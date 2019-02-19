@@ -26,13 +26,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ChunkTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\GitHub\sadx-mod-loader\libmodutils\ModelInfo.cpp">
+    <ClCompile Include="SA2Sonic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

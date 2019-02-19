@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2016
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SA2Sonic", "SA2Sonic\SA2Sonic.vcxproj", "{79671020-2F48-43F5-A041-8D49D99A317B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{90CF4AD9-6603-458F-8E3F-E99C0818E43D} = {90CF4AD9-6603-458F-8E3F-E99C0818E43D}
+		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B} = {EC0293F5-4BCF-46B2-8133-18CAEA141C5B}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ModLoaderCommon", "mod-loader-common\ModLoaderCommon\ModLoaderCommon.vcxproj", "{EC0293F5-4BCF-46B2-8133-18CAEA141C5B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmodutils", "sadx-mod-loader\libmodutils\libmodutils.vcxproj", "{90CF4AD9-6603-458F-8E3F-E99C0818E43D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B} = {EC0293F5-4BCF-46B2-8133-18CAEA141C5B}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{6BBD740C-9901-48D5-A79B-46D1ED29C20F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimConverter", "AnimConverter\AnimConverter.csproj", "{C654FAAA-BD8A-4031-AAE7-48FDFF725963}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{79671020-2F48-43F5-A041-8D49D99A317B}.Debug|x86.ActiveCfg = Debug|Win32
+		{79671020-2F48-43F5-A041-8D49D99A317B}.Debug|x86.Build.0 = Debug|Win32
+		{79671020-2F48-43F5-A041-8D49D99A317B}.Release|x86.ActiveCfg = Release|Win32
+		{79671020-2F48-43F5-A041-8D49D99A317B}.Release|x86.Build.0 = Release|Win32
+		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B}.Debug|x86.ActiveCfg = Debug|Win32
+		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B}.Debug|x86.Build.0 = Debug|Win32
+		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B}.Release|x86.ActiveCfg = Release|Win32
+		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B}.Release|x86.Build.0 = Release|Win32
+		{90CF4AD9-6603-458F-8E3F-E99C0818E43D}.Debug|x86.ActiveCfg = Debug|Win32
+		{90CF4AD9-6603-458F-8E3F-E99C0818E43D}.Debug|x86.Build.0 = Debug|Win32
+		{90CF4AD9-6603-458F-8E3F-E99C0818E43D}.Release|x86.ActiveCfg = Release|Win32
+		{90CF4AD9-6603-458F-8E3F-E99C0818E43D}.Release|x86.Build.0 = Release|Win32
+		{C654FAAA-BD8A-4031-AAE7-48FDFF725963}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C654FAAA-BD8A-4031-AAE7-48FDFF725963}.Debug|x86.Build.0 = Debug|Any CPU
+		{C654FAAA-BD8A-4031-AAE7-48FDFF725963}.Release|x86.ActiveCfg = Release|Any CPU
+		{C654FAAA-BD8A-4031-AAE7-48FDFF725963}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B} = {6BBD740C-9901-48D5-A79B-46D1ED29C20F}
+		{90CF4AD9-6603-458F-8E3F-E99C0818E43D} = {6BBD740C-9901-48D5-A79B-46D1ED29C20F}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {390E0A4F-9940-41E7-865B-BE86DD39BEF2}
+	EndGlobalSection
+EndGlobal
