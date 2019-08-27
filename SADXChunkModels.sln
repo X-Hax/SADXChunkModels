@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2016
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SA2Sonic", "SA2Sonic\SA2Sonic.vcxproj", "{79671020-2F48-43F5-A041-8D49D99A317B}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -19,6 +19,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{6BBD740C-9901-48D5-A79B-46D1ED29C20F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimConverter", "AnimConverter\AnimConverter.csproj", "{C654FAAA-BD8A-4031-AAE7-48FDFF725963}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SA2Knuckles", "SA2Knuckles\SA2Knuckles.vcxproj", "{E58B104E-E518-4DF9-899F-239941FE3DAE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{90CF4AD9-6603-458F-8E3F-E99C0818E43D} = {90CF4AD9-6603-458F-8E3F-E99C0818E43D}
+		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B} = {EC0293F5-4BCF-46B2-8133-18CAEA141C5B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +48,10 @@ Global
 		{C654FAAA-BD8A-4031-AAE7-48FDFF725963}.Debug|x86.Build.0 = Debug|Any CPU
 		{C654FAAA-BD8A-4031-AAE7-48FDFF725963}.Release|x86.ActiveCfg = Release|Any CPU
 		{C654FAAA-BD8A-4031-AAE7-48FDFF725963}.Release|x86.Build.0 = Release|Any CPU
+		{E58B104E-E518-4DF9-899F-239941FE3DAE}.Debug|x86.ActiveCfg = Debug|Win32
+		{E58B104E-E518-4DF9-899F-239941FE3DAE}.Debug|x86.Build.0 = Debug|Win32
+		{E58B104E-E518-4DF9-899F-239941FE3DAE}.Release|x86.ActiveCfg = Release|Win32
+		{E58B104E-E518-4DF9-899F-239941FE3DAE}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
