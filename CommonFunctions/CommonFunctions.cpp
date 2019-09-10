@@ -54,7 +54,6 @@ void SetupWorldMatrix()
 	memcpy(_nj_current_matrix_ptr_, &ViewMatrix, sizeof(NJS_MATRIX)); // reset current matrix to ViewMatrix
 }
 
-template<int N>
 void ProcessAnimList(AnimData_t* animlist, const std::string& mtnpath, int animcount, std::unordered_map<int, NJS_OBJECT*>& modelmap)
 {
 	const IniFile* mtnini = new IniFile(mtnpath + "Animation List.ini");
