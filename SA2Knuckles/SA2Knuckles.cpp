@@ -6,31 +6,11 @@
 #include "SADXModLoader.h"
 #include "ModelInfo.h"
 #include "AnimationFile.h"
+#include "..\CommonFunctions\CommonFunctions.h"
 
 using std::unordered_map;
 using std::vector;
 using std::string;
-
-FastcallFunctionPointer(void, sub_7917F0, (Sint32* a1, Sint16* a2), 0x7917F0);
-void DrawChunkModel(NJS_CNK_MODEL* model)
-{
-	sub_7917F0(model->vlist, model->plist);
-}
-
-void njCnkAction(NJS_ACTION* action, float frame)
-{
-	DisplayAnimationFrame(action, frame, (QueuedModelFlagsB)0, 0, (void(__cdecl*)(NJS_MODEL_SADX*, int, int))DrawChunkModel);
-}
-
-void NullModel(NJS_MODEL_SADX*, int, int)
-{
-
-}
-
-void njNullAction(NJS_ACTION* action, float frame)
-{
-	DisplayAnimationFrame(action, frame, (QueuedModelFlagsB)0, 0, NullModel);
-}
 
 namespace models
 {
@@ -72,10 +52,7 @@ void(__cdecl** NodeCallbackFuncPtr)(NJS_OBJECT* obj) = (decltype(NodeCallbackFun
 void DrawKnucklesModel(CharObj2* a2, int animNum, NJS_ACTION* action)
 {
 	njPushMatrix(nullptr);
-	// The next three lines help to reduce floating-point rounding errors at large coordinates.
-	ProjectToWorldSpace(); // set WorldMatrix to _nj_current_matrix_ptr_ * InverseViewMatrix
-	Direct3D_SetWorldTransform(); // set device's world transform to WorldMatrix
-	memcpy(_nj_current_matrix_ptr_, &ViewMatrix, sizeof(NJS_MATRIX)); // reset current matrix to ViewMatrix
+	SetupWorldMatrix();
 	Direct3D_SetChunkModelRenderState();
 	*NodeCallbackFuncPtr = NodeCallback;
 	njCnkAction(action, a2->AnimationThing.Frame);
@@ -364,24 +341,7 @@ extern "C"
 			break;
 		}
 		unordered_map<string, void*> labels;
-		WIN32_FIND_DATAA data;
-		const string srcPathSearch = mdlpath + "*.sa2mdl";
-		const HANDLE hFind = FindFirstFileA(srcPathSearch.c_str(), &data);
-		if (hFind == INVALID_HANDLE_VALUE)
-		{
-			// No files found.
-			return;
-		}
-
-		do
-		{
-			const string modFile = mdlpath + string(data.cFileName);
-			ModelInfo* mdl = new ModelInfo(modFile.c_str());
-			auto map = mdl->getlabels();
-			for (auto i = map->cbegin(); i != map->cend(); ++i)
-				labels[i->first] = i->second;
-		} while (FindNextFileA(hFind, &data) != 0);
-		FindClose(hFind);
+		if (!FindModels(mdlpath, labels)) return;
 		if (outfitnum != outfits::normal && outfitnum != outfits::dc)
 		{
 			string mdlpath2;
@@ -406,23 +366,7 @@ extern "C"
 				mdlpath2 = string(path) + "\\system\\knuckmdl_am\\";
 				break;
 			}
-			const string srcPathSearch = mdlpath2 + "*.sa2mdl";
-			const HANDLE hFind = FindFirstFileA(srcPathSearch.c_str(), &data);
-			if (hFind == INVALID_HANDLE_VALUE)
-			{
-				// No files found.
-				return;
-			}
-
-			do
-			{
-				const string modFile = mdlpath2 + string(data.cFileName);
-				ModelInfo* mdl = new ModelInfo(modFile.c_str());
-				auto map = mdl->getlabels();
-				for (auto i = map->cbegin(); i != map->cend(); ++i)
-					labels[i->first] = i->second;
-			} while (FindNextFileA(hFind, &data) != 0);
-			FindClose(hFind);
+			FindModels(mdlpath2, labels);
 		}
 		const IniFile* mdlini = new IniFile(mdlpath + "knuckmdl.ini");
 		const IniGroup* mdlgrp = mdlini->getGroup("");
@@ -536,29 +480,7 @@ extern "C"
 			}
 		}
 		delete cfgini;
-		IniFile* mtnini = new IniFile(mtnpath + "Animation List.ini");
-		char idxbuf[4];
-		for (int i = 0; i < AnimCount; i++)
-		{
-			sprintf_s(idxbuf, "%d", i);
-			if (mtnini->hasGroup(idxbuf))
-			{
-				const IniGroup* grp = mtnini->getGroup(idxbuf);
-				AnimationFile* mtn = new AnimationFile(mtnpath + grp->getString("Animation") + ".saanim");
-				KnucklesAnimList[i].Animation = new NJS_ACTION();
-				KnucklesAnimList[i].Animation->object = modelmap[grp->getInt("Model")];
-				KnucklesAnimList[i].Animation->motion = mtn->getmotion();
-				KnucklesAnimList[i].Instance = (char)mtn->getmodelcount();
-				KnucklesAnimList[i].Property = (char)grp->getInt("Property");
-				if (KnucklesAnimList[i].Property >= 5) --KnucklesAnimList[i].Property;
-				KnucklesAnimList[i].NextAnim = (short)grp->getInt("NextAnimation");
-				KnucklesAnimList[i].TransitionSpeed = grp->getFloat("TransitionSpeed");
-				KnucklesAnimList[i].AnimationSpeed = grp->getFloat("AnimationSpeed");
-			}
-			else
-				KnucklesAnimList[i] = KnucklesAnimList[0];
-		}
-		delete mtnini;
+		ProcessAnimList(KnucklesAnimList, mtnpath, AnimCount, modelmap);
 		WriteData((AnimData_t**)0x47A874, KnucklesAnimList);
 	}
 
