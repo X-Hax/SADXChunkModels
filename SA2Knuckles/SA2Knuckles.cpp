@@ -480,7 +480,7 @@ extern "C"
 			}
 		}
 		delete cfgini;
-		ProcessAnimList(KnucklesAnimList, mtnpath, AnimCount, modelmap);
+		ProcessAnimList(KnucklesAnimList, mtnpath, modelmap);
 		WriteData((AnimData_t**)0x47A874, KnucklesAnimList);
 	}
 
