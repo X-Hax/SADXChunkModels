@@ -1410,6 +1410,7 @@ void ApplyJiggle(JiggleInfo* a1)
 	float v434; // [esp+2Ch] [ebp-44h]
 	float v435; // [esp+30h] [ebp-40h]
 	float v436; // [esp+30h] [ebp-40h]
+	int v436b = 0;
 	float v437; // [esp+30h] [ebp-40h]
 	float v438; // [esp+30h] [ebp-40h]
 	float v439; // [esp+30h] [ebp-40h]
@@ -1704,7 +1705,7 @@ void ApplyJiggle(JiggleInfo* a1)
 		ApplyJiggle_8_9_10(v5, v1, (float*)v1->Model->chunkmodel->vlist + 2, 0.89999998f);
 		return;
 	case 9:
-		ApplyJiggle_8_9_10(v5, v1, (float*)(**(_DWORD * *)(*(_DWORD*)v1->gap20 + 4) + 8), 0.5f);
+		ApplyJiggle_8_9_10(v5, v1, (float*)v1->OtherModel->chunkmodel->vlist + 2, 0.5f);
 		return;
 	case 10:
 		ApplyJiggle_8_9_10(v5, v1, v4, 0.89999998f);
@@ -1924,7 +1925,7 @@ void ApplyJiggle(JiggleInfo* a1)
 		{
 			return;
 		}
-		v94 = *(int*)&v436;
+		v94 = v436b;
 		v93 = v89 * v436;
 		v95 = v93;
 		while (1)
@@ -2090,7 +2091,7 @@ void ApplyJiggle(JiggleInfo* a1)
 				v5 = &v142[v102];
 				--v103;
 			} while (v103);
-			v94 = *(int*)&v436;
+			v94 = v436b;
 		LABEL_159:
 			if (v101 > 0)
 			{
@@ -2148,14 +2149,14 @@ void ApplyJiggle(JiggleInfo* a1)
 			v92 = *v91;
 			v5 += 2;
 			v4 += 2;
-			if ((unsigned __int8)* v91 == -1)
+			if ((char)* v91 == -1)
 			{
 				return;
 			}
 		}
 		v94 = 6;
 	LABEL_118:
-		v436 = *(float*)& v94;
+		v436b = v94;
 		goto LABEL_119;
 	case 15:
 		v166 = v1->field_C;

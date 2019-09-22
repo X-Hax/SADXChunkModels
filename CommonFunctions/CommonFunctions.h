@@ -15,7 +15,7 @@ struct JiggleInfo
 	NJS_OBJECT* SourceModelPtr;
 	NJS_OBJECT* SourceModelCopy;
 	NJS_OBJECT* Model;
-	char gap20[4];
+	NJS_OBJECT* OtherModel;
 	NJS_VECTOR field_24;
 	char gap30[4];
 	float field_34[33];
