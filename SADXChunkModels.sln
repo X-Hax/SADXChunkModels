@@ -34,6 +34,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CommonFunctions", "CommonFu
 		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B} = {EC0293F5-4BCF-46B2-8133-18CAEA141C5B}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SA2SonicBase", "SA2SonicBase\SA2SonicBase.vcxproj", "{87D7D181-A4BB-4494-928B-F7DE8B16811B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{71C15618-4DD7-40B9-BF86-2776579DDEB6} = {71C15618-4DD7-40B9-BF86-2776579DDEB6}
+		{90CF4AD9-6603-458F-8E3F-E99C0818E43D} = {90CF4AD9-6603-458F-8E3F-E99C0818E43D}
+		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B} = {EC0293F5-4BCF-46B2-8133-18CAEA141C5B}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -64,6 +71,10 @@ Global
 		{71C15618-4DD7-40B9-BF86-2776579DDEB6}.Debug|x86.Build.0 = Debug|Win32
 		{71C15618-4DD7-40B9-BF86-2776579DDEB6}.Release|x86.ActiveCfg = Release|Win32
 		{71C15618-4DD7-40B9-BF86-2776579DDEB6}.Release|x86.Build.0 = Release|Win32
+		{87D7D181-A4BB-4494-928B-F7DE8B16811B}.Debug|x86.ActiveCfg = Debug|Win32
+		{87D7D181-A4BB-4494-928B-F7DE8B16811B}.Debug|x86.Build.0 = Debug|Win32
+		{87D7D181-A4BB-4494-928B-F7DE8B16811B}.Release|x86.ActiveCfg = Release|Win32
+		{87D7D181-A4BB-4494-928B-F7DE8B16811B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
