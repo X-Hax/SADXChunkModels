@@ -217,11 +217,6 @@ void DrawSonicModel(CharObj2* a2, int animNum, NJS_ACTION* action, JiggleData* j
 		}
 	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
-	*NodeCallbackFuncPtr = NodeCallback2;
-	njPushMatrix(nullptr);
-	njNullAction(action, a2->AnimationThing.Frame);
-	njPopMatrix(1);
-	*NodeCallbackFuncPtr = nullptr;
 }
 
 int sub_446960(int result, int a2, __int16 a3)
@@ -305,19 +300,20 @@ void __cdecl Sonic_Display_r(ObjectMaster* obj)
 				njSetTexture(&SONIC_TEXLIST);
 			else
 				njSetTexture(&SUPERSONIC_TEXLIST);
-			njPushMatrix(0);
+			NJS_MATRIX posmatrix;
+			memcpy(posmatrix, &IdentityMatrix, sizeof(NJS_MATRIX));
 			if (*((_DWORD*)data1->field_3C + 16))
-				njTranslateV(0, &data1->CollisionInfo->CollisionArray->origin);
+				njTranslateV(posmatrix, &data1->CollisionInfo->CollisionArray->origin);
 			else
-				njTranslateV(0, &data1->Position);
+				njTranslateV(posmatrix, &data1->Position);
 			v5 = data1->Rotation.z;
 			if (v5)
-				njRotateZ(0, (unsigned __int16)v5);
+				njRotateZ(posmatrix, (unsigned __int16)v5);
 			v6 = data1->Rotation.x;
 			if (v6)
-				njRotateX(0, (unsigned __int16)v6);
+				njRotateX(posmatrix, (unsigned __int16)v6);
 			if (data1->Rotation.y != 0x8000)
-				njRotateY(0, (unsigned __int16)(-0x8000 - LOWORD(data1->Rotation.y)));
+				njRotateY(posmatrix, (unsigned __int16)(-0x8000 - LOWORD(data1->Rotation.y)));
 			if (v4 == 14)
 			{
 				if (data1->Status & (Status_Unknown1 | Status_Ground))
@@ -325,28 +321,37 @@ void __cdecl Sonic_Display_r(ObjectMaster* obj)
 					a2.x = 0;
 					a2.y = -1;
 					a2.z = 0;
-					njTranslateV(0, &a2);
-					njTranslate(0, 0, 5, 0);
-					njRotateZ(0, 0x2000);
-					njTranslate(0, 0, -5, 0);
+					njTranslateV(posmatrix, &a2);
+					njTranslate(posmatrix, 0, 5, 0);
+					njRotateZ(posmatrix, 0x2000);
+					njTranslate(posmatrix, 0, -5, 0);
 					a2.x = 0.69999999f;
 					a2.y = 1.1f;
 					a2.z = 0.80000001f;
-					njScaleV(0, &a2);
+					njScaleV(posmatrix, &a2);
 				}
 			}
+			njPushMatrix(nullptr);
+			njMultiMatrix(nullptr, posmatrix);
 			if (*((_DWORD*)data1->field_3C + 16))
 				sub_4187D0(data1);
 			else
 			{
+				NJS_ACTION* action;
 				if (data2->AnimationThing.State == 2)
-					DrawSonicModel(data2, v4, data2->AnimationThing.action, jiggledata[data1->CharIndex]);
+					action = data2->AnimationThing.action;
 				else
 				{
 					if (!MetalSonicFlag && (data1->Status & Status_Ball) && v4 != 145 && (data2->SonicSpinTimer & 0x11))
 						v4 = 32;
-					DrawSonicModel(data2, v4, data2->AnimationThing.AnimData[v4].Animation, jiggledata[data1->CharIndex]);
+					action = data2->AnimationThing.AnimData[v4].Animation;
 				}
+				DrawSonicModel(data2, v4, action, jiggledata[data1->CharIndex]);
+				*NodeCallbackFuncPtr = NodeCallback2;
+				njPushMatrix(posmatrix);
+				njNullAction(action, data2->AnimationThing.Frame);
+				njPopMatrix(1);
+				*NodeCallbackFuncPtr = nullptr;
 				/*if (data1->Status & Status_LightDash)
 				{
 					Direct3D_PerformLighting(0);
