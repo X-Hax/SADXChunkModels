@@ -696,7 +696,7 @@ void __cdecl Sonic_Display_r(ObjectMaster* obj)
 				njSetTexture(&SUPERSONIC_TEXLIST);
 			memcpy(posmatrix, &IdentityMatrix, sizeof(NJS_MATRIX));
 			if (*((_DWORD*)data1->field_3C + 16))
-				njTranslateV(posmatrix, &data1->CollisionInfo->CollisionArray->origin);
+				njTranslateV(posmatrix, &data1->CollisionInfo->CollisionArray->center);
 			else
 				njTranslateV(posmatrix, &data1->Position);
 			v5 = data1->Rotation.z;

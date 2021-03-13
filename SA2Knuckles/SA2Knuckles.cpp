@@ -213,7 +213,7 @@ void __cdecl Knuckles_Display_r(ObjectMaster* obj_1)
 				vd.z = v10->SurfaceNormal.z * *(float*)&data1->LoopData + vd.z;
 			}
 			njTranslateV(0, &vd);
-			data1->CollisionInfo->CollisionArray->origin = vd;
+			data1->CollisionInfo->CollisionArray->center = vd;
 			if (v3 == 51)
 			{
 				v16 = (short)(data2_pp->Forward.y - data1->Rotation.y);
