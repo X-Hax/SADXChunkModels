@@ -135,7 +135,7 @@ NJS_MATRIX posmatrix;
 void NodeCallback2(NJS_OBJECT* obj)
 {
 	float* v1 = _nj_current_matrix_ptr_;
-	if (obj == modelmap[3])
+	if (obj == modelmap[48])
 	{
 		if (jiggledata[currentplayer] && jiggledata[currentplayer]->SpineJiggle)
 		{
@@ -146,14 +146,14 @@ void NodeCallback2(NJS_OBJECT* obj)
 			njCalcPoint(m, &v, &jiggledata[currentplayer]->HeadNodePos);
 		}
 	}
-	else if (obj == modelmap[4])
+	else if (obj == modelmap[5])
 	{
 		NJS_VECTOR v = { 0, 0, 0 };
 		njCalcPoint(v1, &v, &CharObj2Ptrs[currentplayer]->SoManyVectors[0]);
 		v.z = 1;
 		njCalcVector(v1, &v, &CharObj2Ptrs[currentplayer]->SoManyVectors[6]);
 	}
-	else if (obj == modelmap[10])
+	else if (obj == modelmap[11])
 	{
 		NJS_VECTOR v = { 0, 0, 0 };
 		njCalcPoint(v1, &v, &CharObj2Ptrs[currentplayer]->SoManyVectors[1]);
