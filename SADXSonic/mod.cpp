@@ -217,15 +217,11 @@ void DrawSonicModel(CharObj2* a2, int animNum, NJS_ACTION* action, JiggleData* j
 		if (jiggle->SpineJiggle)
 			v16->chunkmodel = v55;
 	}
-	if (!MetalSonicFlag && animNum != 32)
-		if (animNum < 134 || animNum > 145)
-		{
-			if ((a2->Upgrades & Upgrades_CrystalRing) && modelmap.find(63) != modelmap.cend())
-			{
-				memcpy(_nj_current_matrix_ptr_, flt_1A51A3C, sizeof(NJS_MATRIX));
-				DrawChunkObject(modelmap[63]);
-			}
-		}
+	if (action->object == SONIC_OBJECTS[0] && (a2->Upgrades & Upgrades_CrystalRing) && modelmap.find(63) != modelmap.cend())
+	{
+		memcpy(_nj_current_matrix_ptr_, flt_1A51A3C, sizeof(NJS_MATRIX));
+		DrawChunkObject(modelmap[63]);
+	}
 	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 }
