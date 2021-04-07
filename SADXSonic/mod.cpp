@@ -162,6 +162,20 @@ void NodeCallback2(NJS_OBJECT* obj)
 	}
 }
 
+void RemapAction(NJS_ACTION& act2)
+{
+	if (MetalSonicFlag)
+	{
+		if (act2.object == SONIC_OBJECTS[0])
+			act2.object = SONIC_OBJECTS[68];
+		else if (act2.object == SONIC_OBJECTS[66])
+			act2.object = SONIC_OBJECTS[69];
+		else if (act2.object == SONIC_OBJECTS[67])
+			act2.object = SONIC_OBJECTS[70];
+	}
+	act2.object = modelmap2[act2.object];
+}
+
 void(__cdecl** NodeCallbackFuncPtr)(NJS_OBJECT* obj) = (decltype(NodeCallbackFuncPtr))0x3AB9908;
 void DrawSonicModel(CharObj2* a2, int animNum, NJS_ACTION* action, JiggleData* jiggle)
 {
@@ -190,16 +204,7 @@ void DrawSonicModel(CharObj2* a2, int animNum, NJS_ACTION* action, JiggleData* j
 		modelmap[14]->sibling = modelmap[15];
 	}
 	NJS_ACTION act2 = *action;
-	if (MetalSonicFlag)
-	{
-		if (act2.object == SONIC_OBJECTS[0])
-			act2.object = SONIC_OBJECTS[68];
-		else if (act2.object == SONIC_OBJECTS[66])
-			act2.object = SONIC_OBJECTS[69];
-		else if (act2.object == SONIC_OBJECTS[67])
-			act2.object = SONIC_OBJECTS[70];
-	}
-	act2.object = modelmap2[act2.object];
+	RemapAction(act2);
 	*NodeCallbackFuncPtr = NodeCallback;
 	if (*(int*)0x3ABD9CC)
 	{
@@ -237,7 +242,7 @@ void __cdecl Sonic_Display_r(ObjectMaster* obj)
 	unsigned int v4; // ebp
 	Angle v5; // eax
 	Angle v6; // eax
-	NJS_VECTOR a2; // [esp+Ch] [ebp-Ch]
+	NJS_VECTOR a2 = {}; // [esp+Ch] [ebp-Ch]
 
 	data2_pp = (EntityData2*)obj->Data2;
 	data2 = data2_pp->CharacterData;
@@ -313,9 +318,11 @@ void __cdecl Sonic_Display_r(ObjectMaster* obj)
 					action = data2->AnimationThing.AnimData[v4].Animation;
 				}
 				DrawSonicModel(data2, v4, action, jiggledata[data1->CharIndex]);
+				NJS_ACTION act2 = *action;
+				RemapAction(act2);
 				*NodeCallbackFuncPtr = NodeCallback2;
 				njPushMatrix(_nj_unit_matrix_);
-				njNullAction(action, data2->AnimationThing.Frame);
+				njNullAction(&act2, data2->AnimationThing.Frame);
 				njPopMatrix(1);
 				*NodeCallbackFuncPtr = nullptr;
 				/*if (data1->Status & Status_LightDash)
