@@ -87,6 +87,7 @@ void __cdecl Amy_Display_r(ObjectMaster* obj)
 
 	data1 = obj->Data1;
 	data2 = ((EntityData2*)obj->Data2)->CharacterData;
+	currentplayer = data1->CharIndex;
 	Direct3D_SetZFunc(3u);
 	if (HIBYTE(data2->LightdashTime) != 1)
 	{
@@ -216,7 +217,7 @@ LABEL_7:
 			}
 			else if (Controllers[0].HeldButtons & Buttons_X && data1->Action == 53)
 			{
-				DrawChunkObject(data2->AnimationThing.AnimData[(unsigned __int16)data2->AnimationThing.Index].Animation->object);
+				DrawChunkObject(modelmap2[data2->AnimationThing.AnimData[(unsigned __int16)data2->AnimationThing.Index].Animation->object]);
 			}
 			else
 			{
@@ -351,10 +352,14 @@ void __cdecl Amy_AfterImage_Main_r(ObjectMaster* obj)
 			{
 				njRotateY(0, (unsigned __int16)(-32768 - LOWORD(v1->Rotation.y)));
 			}
+			njPushMatrix(nullptr);
+			SetupWorldMatrix();
+			Direct3D_SetChunkModelRenderState();
 			NJS_ACTION act2 = *AmyAnimData[(unsigned __int16)v1->InvulnerableTime].Animation;
 			act2.object = modelmap2[act2.object];
 			njCnkAction_Queue(&act2, *(float*)&v1->CharIndex, (QueuedModelFlagsB)0);
-			njPopMatrix(1u);
+			Direct3D_UnsetChunkModelRenderState();
+			njPopMatrix(2);
 			RestoreConstantAttr();
 			ClampGlobalColorThing_Thing();
 			Direct3D_PerformLighting(0);
