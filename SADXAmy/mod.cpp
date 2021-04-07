@@ -226,9 +226,11 @@ LABEL_7:
 				else
 					action = data2->AnimationThing.AnimData[v10].Animation;
 				DrawAmyModel(data2, v10, action);
+				NJS_ACTION act2 = *action;
+				act2.object = modelmap2[act2.object];
 				*NodeCallbackFuncPtr = NodeCallback2;
 				njPushMatrix(_nj_unit_matrix_);
-				njNullAction(action, data2->AnimationThing.Frame);
+				njNullAction(&act2, data2->AnimationThing.Frame);
 				njPopMatrix(1);
 				*NodeCallbackFuncPtr = nullptr;
 			}
@@ -241,6 +243,127 @@ LABEL_7:
 	if (IsGamePaused())
 	{
 		sub_49F0B0(data1, &data2->_struct_a3);
+	}
+}
+
+DataArray(AnimData, AmyAnimData, 0x3C54880, 102);
+void __cdecl Amy_AfterImage_Main_r(ObjectMaster* obj)
+{
+	EntityData1* v1; // esi
+	char v2; // al
+	NJS_OBJECT* v3; // ecx
+	NJS_OBJECT* v4; // edx
+	Uint32 v5; // eax
+	unsigned int v6; // eax
+	Uint32 v7; // eax
+	float r; // ST04_4
+	double v9; // st7
+	Angle v10; // eax
+	Angle v11; // eax
+	Angle v12; // eax
+	Angle v13; // eax
+	NJS_VECTOR a2; // [esp+14h] [ebp-18h]
+	NJS_VECTOR vs = {}; // [esp+20h] [ebp-Ch]
+
+	v1 = obj->Data1;
+	v2 = v1->Index + 1;
+	v1->Index = v2;
+	if ((unsigned __int8)v2 < 5u)
+	{
+		if ((unsigned __int8)v2 >= 4u && !MissedFrames)
+		{
+			njControl3D_Backup();
+			njControl3D_Add(NJD_CONTROL_3D_OFFSET_MATERIAL);
+			v3 = modelmap[36]->sibling;
+			v4 = v3->child;
+			v3->scl[0] = *(float*)&v1->Object;
+			v3->scl[1] = *(float*)&v1->Object;
+			v3->scl[2] = *(float*)&v1->Object;
+			v4->scl[0] = *(float*)&v1->Object;
+			v4->scl[1] = *(float*)&v1->Object;
+			v4->scl[2] = *(float*)&v1->Object;
+			v5 = v3->evalflags;
+			if (*(float*)&v1->Object == 0.0)
+			{
+				v3->evalflags = v5 | 8;
+				v6 = v4->evalflags | 8;
+			}
+			else
+			{
+				v3->evalflags = v5 & 0xFFFFFFF7;
+				v4->evalflags &= 0xFFFFFFF7;
+				v7 = v3->evalflags;
+				if (*(float*)&v1->Object == 1)
+				{
+					v3->evalflags = v7 | 4;
+					v6 = v4->evalflags | 4;
+				}
+				else
+				{
+					v3->evalflags = v7 & 0xFFFFFFFB;
+					v6 = v4->evalflags & 0xFFFFFFFB;
+				}
+			}
+			v4->evalflags = v6;
+			Direct3D_PerformLighting(2);
+			BackupConstantAttr();
+			AddConstantAttr(0, NJD_FLAG_USE_ALPHA);
+			r = (double)(unsigned __int8)v1->Index * 0.2 * -0.39999998 - 0.5;
+			SetMaterialAndSpriteColor_Float(r, 0.0, 0.0, 0.0);
+			njSetTexture(&AMY_TEXLIST);
+			njPushMatrix(0);
+			v9 = *(float*)&v1->LoopData * 0.5;
+			vs.z = 0.0;
+			vs.x = 0.0;
+			vs.y = v9;
+			njPushMatrix(_nj_unit_matrix_);
+			v10 = v1->Rotation.z;
+			if (v10)
+			{
+				njRotateZ(0, (unsigned __int16)v10);
+			}
+			v11 = v1->Rotation.x;
+			if (v11)
+			{
+				njRotateX(0, (unsigned __int16)v11);
+			}
+			if (v1->Rotation.y)
+			{
+				njRotateY(0, (unsigned __int16)-LOWORD(v1->Rotation.y));
+			}
+			njCalcVector(0, &vs, &a2);
+			njPopMatrix(1u);
+			a2.x = a2.x + v1->Position.x;
+			a2.y = a2.y + v1->Position.y;
+			a2.z = a2.z + v1->Position.z;
+			njTranslateV(0, &a2);
+			v12 = v1->Rotation.z;
+			if (v12)
+			{
+				njRotateZ(0, (unsigned __int16)v12);
+			}
+			v13 = v1->Rotation.x;
+			if (v13)
+			{
+				njRotateX(0, (unsigned __int16)v13);
+			}
+			if (v1->Rotation.y != 0x8000)
+			{
+				njRotateY(0, (unsigned __int16)(-32768 - LOWORD(v1->Rotation.y)));
+			}
+			NJS_ACTION act2 = *AmyAnimData[(unsigned __int16)v1->InvulnerableTime].Animation;
+			act2.object = modelmap2[act2.object];
+			njCnkAction_Queue(&act2, *(float*)&v1->CharIndex, (QueuedModelFlagsB)0);
+			njPopMatrix(1u);
+			RestoreConstantAttr();
+			ClampGlobalColorThing_Thing();
+			Direct3D_PerformLighting(0);
+			njControl3D_Restore();
+		}
+	}
+	else
+	{
+		CheckThingButThenDeleteObject(obj);
 	}
 }
 
@@ -261,6 +384,7 @@ extern "C"
 			if (modelmap.find(i) != modelmap.cend())
 				modelmap2[AMY_OBJECTS[i]] = modelmap[i];
 		WriteJump(Amy_Display, Amy_Display_r);
+		WriteJump((void*)0x486F60, Amy_AfterImage_Main_r);
 	}
 
 	__declspec(dllexport) ModInfo SADXModInfo = { ModLoaderVer };
