@@ -273,10 +273,10 @@ void __cdecl Sonic_Display_r(ObjectMaster* obj)
 		{
 			if (MetalSonicFlag)
 				njSetTexture(&METALSONIC_TEXLIST);
-			else if (v4 < 134 || v4 > 145)
-				njSetTexture(&SONIC_TEXLIST);
-			else
+			else if (data2->Upgrades & Upgrades_SuperSonic)
 				njSetTexture(&SUPERSONIC_TEXLIST);
+			else
+				njSetTexture(&SONIC_TEXLIST);
 			memcpy(posmatrix, &IdentityMatrix, sizeof(NJS_MATRIX));
 			njTranslateV(posmatrix, &data1->CollisionInfo->CollisionArray->center);
 			v5 = data1->Rotation.z;
