@@ -234,20 +234,6 @@ void DrawSonicModel(CharObj2* a2, int animNum, NJS_ACTION* action, JiggleData* j
 	njPopMatrix(1);
 }
 
-void RemapActionLink(NJS_ACTION_LINK& act2)
-{
-
-	if (MetalSonicFlag)
-	{
-		if (act2.object == SONIC_OBJECTS[0])
-			act2.object = SONIC_OBJECTS[68];
-		else if (act2.object == SONIC_OBJECTS[66])
-			act2.object = SONIC_OBJECTS[69];
-		else if (act2.object == SONIC_OBJECTS[67])
-			act2.object = SONIC_OBJECTS[70];
-	}
-	act2.object = modelmap2[act2.object];
-}
 
 void CNK_CommonDrawSonicAction(uint8_t id) {
 	njPushMatrix(nullptr);
@@ -268,31 +254,6 @@ void CNK_CommonDrawSonicAction(uint8_t id) {
 	}
 }
 
-void CNK_DrawSonicActionLink(uint8_t id, NJS_ACTION_LINK* action, float frame, int queueModelFlag)
-{
-	CharObj2* co2 = CharObj2Ptrs[id];
-
-	CNK_CommonDrawSonicAction(id);
-
-	NJS_ACTION_LINK act2 = *action;
-	RemapActionLink(act2);
-	*NodeCallbackFuncPtr = NodeCallback;
-
-	DrawQueueDepthBias = -5952.0;
-
-	njCnkActionLinkEX(&act2, frame, (QueuedModelFlagsB)queueModelFlag);
-
-	DrawQueueDepthBias = 0.0;
-	*NodeCallbackFuncPtr = nullptr;
-
-	if (action->object == SONIC_OBJECTS[0] && (co2->Upgrades & Upgrades_CrystalRing) && modelmap.find(63) != modelmap.cend())
-	{
-		memcpy(_nj_current_matrix_ptr_, flt_1A51A3C, sizeof(NJS_MATRIX));
-		DrawChunkObject(modelmap[63]);
-	}
-	Direct3D_UnsetChunkModelRenderState();
-	njPopMatrix(1);
-}
 
 void CNK_DrawSonicAction(uint8_t id, NJS_ACTION* action, float frame, int queueModelFlag)
 {
@@ -320,9 +281,6 @@ void CNK_DrawSonicAction(uint8_t id, NJS_ACTION* action, float frame, int queueM
 	njPopMatrix(1);
 }
 
-DataArray(taskwk*, taskwkPtrs, 0x3B42E10, 8);
-
-FunctionPointer(void, late_ActionLink_, (NJS_ACTION_LINK* actionLink, float frame, int queueFlags), 0x406EE0);
 void __cdecl DrawEventAction_r(taskwk* data1, int light)
 {
 	eventwk* event; // ebp

@@ -33,6 +33,7 @@ FunctionPointer(void, sub_406EE0, (NJS_ACTION_LINK* a1, int a2, int a3), 0x406EE
 FunctionPointer(void, sub_4084B0, (NJS_ACTION_LINK* a1, int a2, int a3), 0x4084B0);
 
 DataPointer(int, dspl, 0x90C4E8);
+DataArray(taskwk*, taskwkPtrs, 0x3B42E10, 8);
 
 static const void* const actionLinkExPtr = (void*)0x406C40;
 static inline void late_ActionLinkEx_(NJS_ACTION_LINK* action, float frameNumber, QueuedModelFlagsB flags, float scale, void(__cdecl* callback)(NJS_MODEL_SADX*, int, int))
