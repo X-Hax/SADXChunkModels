@@ -43,7 +43,7 @@ void njNullAction(NJS_ACTION* action, float frame)
 	DisplayAnimationFrame(action, frame, (QueuedModelFlagsB)0, 0, NullModel);
 }
 
-void njCnkActionLink(NJS_ACTION_LINK* action, float frame, int flag)
+void njCnkActionLinkEX(NJS_ACTION_LINK* action, float frame, int flag)
 {
 	late_ActionLinkEx_(action, frame, (QueuedModelFlagsB)flag, 0.0, (void(__cdecl*)(NJS_MODEL_SADX*, int, int))DrawChunkModel);
 }

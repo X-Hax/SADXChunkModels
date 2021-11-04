@@ -8,6 +8,7 @@
 #include "AnimationFile.h"
 #include "..\CommonFunctions\CommonFunctions.h"
 #include "..\CommonFunctions\CommonSADX.h"
+bool isJiggle = true;
 
 using std::unordered_map;
 using std::vector;
@@ -165,6 +166,7 @@ void NodeCallback2(NJS_OBJECT* obj)
 
 void RemapAction(NJS_ACTION& act2)
 {
+
 	if (MetalSonicFlag)
 	{
 		if (act2.object == SONIC_OBJECTS[0])
@@ -185,7 +187,7 @@ void DrawSonicModel(CharObj2* a2, int animNum, NJS_ACTION* action, JiggleData* j
 	Direct3D_SetChunkModelRenderState();
 	NJS_OBJECT* v16 = nullptr;
 	NJS_CNK_MODEL* v55 = nullptr;
-	if (jiggle)
+	if (jiggle && isJiggle)
 	{
 		if (jiggle->SpineJiggle)
 		{
@@ -218,7 +220,7 @@ void DrawSonicModel(CharObj2* a2, int animNum, NJS_ACTION* action, JiggleData* j
 		njCnkAction(&act2, a2->AnimationThing.Frame);
 	}
 	*NodeCallbackFuncPtr = nullptr;
-	if (jiggle)
+	if (jiggle && isJiggle)
 	{
 		if (jiggle->SpineJiggle)
 			v16->chunkmodel = v55;
@@ -230,6 +232,298 @@ void DrawSonicModel(CharObj2* a2, int animNum, NJS_ACTION* action, JiggleData* j
 	}
 	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
+}
+
+void RemapActionLink(NJS_ACTION_LINK& act2)
+{
+
+	if (MetalSonicFlag)
+	{
+		if (act2.object == SONIC_OBJECTS[0])
+			act2.object = SONIC_OBJECTS[68];
+		else if (act2.object == SONIC_OBJECTS[66])
+			act2.object = SONIC_OBJECTS[69];
+		else if (act2.object == SONIC_OBJECTS[67])
+			act2.object = SONIC_OBJECTS[70];
+	}
+	act2.object = modelmap2[act2.object];
+}
+
+void CNK_CommonDrawSonicAction(uint8_t id) {
+	njPushMatrix(nullptr);
+	SetupWorldMatrix();
+	Direct3D_SetChunkModelRenderState();
+
+	CharObj2* co2 = CharObj2Ptrs[id];
+
+	if ((co2->Upgrades & Upgrades_LightShoes) && modelmap.find(58) != modelmap.cend() && modelmap.find(60) != modelmap.cend())
+	{
+		modelmap[19]->sibling = modelmap[58];
+		modelmap[14]->sibling = modelmap[60];
+	}
+	else
+	{
+		modelmap[19]->sibling = modelmap[20];
+		modelmap[14]->sibling = modelmap[15];
+	}
+}
+
+void CNK_DrawSonicActionLink(uint8_t id, NJS_ACTION_LINK* action, float frame, int queueModelFlag)
+{
+	CharObj2* co2 = CharObj2Ptrs[id];
+
+	CNK_CommonDrawSonicAction(id);
+
+	NJS_ACTION_LINK act2 = *action;
+	RemapActionLink(act2);
+	*NodeCallbackFuncPtr = NodeCallback;
+
+	DrawQueueDepthBias = -5952.0;
+
+	njCnkActionLinkEX(&act2, frame, (QueuedModelFlagsB)queueModelFlag);
+
+	DrawQueueDepthBias = 0.0;
+	*NodeCallbackFuncPtr = nullptr;
+
+	if (action->object == SONIC_OBJECTS[0] && (co2->Upgrades & Upgrades_CrystalRing) && modelmap.find(63) != modelmap.cend())
+	{
+		memcpy(_nj_current_matrix_ptr_, flt_1A51A3C, sizeof(NJS_MATRIX));
+		DrawChunkObject(modelmap[63]);
+	}
+	Direct3D_UnsetChunkModelRenderState();
+	njPopMatrix(1);
+}
+
+void CNK_DrawSonicAction(uint8_t id, NJS_ACTION* action, float frame, int queueModelFlag)
+{
+	CharObj2* co2 = CharObj2Ptrs[id];
+
+	CNK_CommonDrawSonicAction(id);
+
+	NJS_ACTION act2 = *action;
+	RemapAction(act2);
+	*NodeCallbackFuncPtr = NodeCallback;
+
+	DrawQueueDepthBias = -5952.0;
+
+	njCnkAction_Queue(&act2, frame, (QueuedModelFlagsB)queueModelFlag);
+
+	DrawQueueDepthBias = 0.0;
+	*NodeCallbackFuncPtr = nullptr;
+
+	if (action->object == SONIC_OBJECTS[0] && (co2->Upgrades & Upgrades_CrystalRing) && modelmap.find(63) != modelmap.cend())
+	{
+		memcpy(_nj_current_matrix_ptr_, flt_1A51A3C, sizeof(NJS_MATRIX));
+		DrawChunkObject(modelmap[63]);
+	}
+	Direct3D_UnsetChunkModelRenderState();
+	njPopMatrix(1);
+}
+
+DataArray(taskwk*, taskwkPtrs, 0x3B42E10, 8);
+
+FunctionPointer(void, late_ActionLink_, (NJS_ACTION_LINK* actionLink, float frame, int queueFlags), 0x406EE0);
+void __cdecl DrawEventAction_r(taskwk* data1, int light)
+{
+	eventwk* event; // ebp
+	EVENT_ACTION_LIST* actionOld; // edi
+	EVENT_ACTION_LIST* actionList; // esi
+	NJS_TEXLIST* texlist; // eax
+	char actionMode; // cl
+	QueuedModelFlagsB QueueModelFlag; // bl
+	NJS_MOTION* OldMotion; // eax
+	//obj* v9; // eax
+	obj* v9;
+	_BOOL1 v10; // zf
+	int i; // edi
+	double v12; // st7
+	NJS_MOTION* v13; // edx
+	float v14; // ecx
+	int v15; // edx
+	double v16; // st7
+	double v17; // st7
+	int j; // eax
+	NJS_ACTION* v19; // [esp-4h] [ebp-44h]
+	int v20; // [esp+0h] [ebp-40h]
+	int v21; // [esp+0h] [ebp-40h]
+	float v22; // [esp+0h] [ebp-40h]
+	char actionListMode; // [esp+1Bh] [ebp-25h]
+	float v24; // [esp+1Ch] [ebp-24h]
+	float timer; // [esp+1Ch] [ebp-24h]
+	float frame; // [esp+20h] [ebp-20h]
+	EVENT_ACTION_LIST* actionOldList; // [esp+24h] [ebp-1Ch]
+	NJS_ACTION* v28; // [esp+28h] [ebp-18h] BYREF
+	NJS_MOTION* a3; // [esp+30h] [ebp-10h] BYREF
+	NJS_MOTION* v30; // [esp+34h] [ebp-Ch]
+	float frameOld; // [esp+38h] [ebp-8h]
+	float v32; // [esp+3Ch] [ebp-4h]
+
+	event = (eventwk*)data1->ewp;
+
+	if (MissedFrames || !event)
+		return;
+
+	actionList = event->action.list;
+	actionOld = event->action.old;
+	actionOldList = actionOld;
+
+	if (!actionList)
+		return;
+
+	uint8_t pid = data1->counter.b[0];
+	actionMode = actionList->mode;
+	frame = (float)actionList->action.motion->nbFrame;
+	v24 = event->action.timer;
+	texlist = actionList->texlist;
+	unsigned __int8 flag = ((unsigned __int8)actionList->mode >> 4) & 0xD;
+	QueueModelFlag = (QueuedModelFlagsB)flag;
+	actionListMode = actionList->mode;
+	if (texlist)
+	{
+		njSetTexture(texlist);
+		actionMode = actionListMode;
+	}
+	if (light >= 0 && (actionMode & 0x20) == 0)
+	{
+		Direct3D_PerformLighting(light);
+		actionMode = actionListMode;
+	}
+	if (actionOld && actionList->linkframe)
+	{
+	
+		v28 = new NJS_ACTION();
+		v9 = actionList->action.object;
+		v28->object = v9;
+		v30 = actionList->action.motion;
+		v28->motion = v30;
+		v10 = (actionOld->mode & 1) == 0;
+
+		OldMotion = actionOld->action.motion;
+		a3 = (NJS_MOTION*)OldMotion;
+
+		if (v10)
+		{
+			frameOld = (float)((unsigned int)&OldMotion->nbFrame - 1);
+		}
+		else
+		{
+			frameOld = 0.0;
+		}
+		v32 = 0.0;
+		i = 0;
+		while (data1 != taskwkPtrs[i])
+		{
+			if (++i >= 8)
+			{
+				goto OutOfRange;
+			}
+		}
+		v12 = floor(v24);
+		if ((double)(unsigned __int8)actionList->linkframe <= v12 + v12)
+		{
+			v14 = v32;
+			v13 = v30;
+		}
+		else
+		{
+			v14 = frameOld;
+			v13 = a3;
+		}
+		EPJoinVertexes(i, actionList->action.object, v13, v14);
+		actionMode = actionListMode;
+	OutOfRange:
+		v16 = v24 + 1.0;
+		v15 = (unsigned __int8)actionList->linkframe + 1;
+		if ((actionMode & 8) != 0)
+		{
+			DrawEventAction((EntityData1*)data1);
+			return;
+		}
+		else
+		{
+			*(float*)&v21 = v16 / (double)v15;
+			if ((actionMode & 4) != 0) {
+
+				DrawEventAction((EntityData1*)data1);
+				return;
+			}
+			else
+			{
+				DrawEventAction((EntityData1*)data1);
+				return;
+			}
+		}
+		v17 = (double)MissedFrames_B + v24;
+		timer = v17;
+		if ((double)(unsigned __int8)actionList->linkframe > floor(v17))
+		{
+			goto LABEL_46;
+		}
+		FreeMemory(actionOldList);
+		event->action.old = 0;
+		goto LABEL_45;
+	}
+	j = 0;
+	while (data1 != (taskwk*)EntityData1Ptrs[j])
+	{
+		if (++j >= 8)
+		{
+			goto OutOfRange_Again;
+		}
+	}
+	EPJoinVertexes(j, actionList->action.object, actionList->action.motion, event->action.timer);
+	actionMode = actionListMode;
+OutOfRange_Again:
+	v22 = event->action.timer;
+	if ((actionMode & 8) != 0)
+	{
+		//njCnkAction_Queue(&actionList->action, v22, QueueModelFlag);
+		CNK_DrawSonicAction(pid, &actionList->action, v22, QueueModelFlag);
+	}
+	else
+	{
+		v19 = &actionList->action;
+		if ((actionMode & 4) != 0)
+		{
+			//njCnkAction_Queue(v19, v22, QueueModelFlag);
+			CNK_DrawSonicAction(pid, v19, v22, QueueModelFlag);
+		}
+		else
+		{
+			CNK_DrawSonicAction(pid, v19, v22, QueueModelFlag);
+			//njCnkAction_Queue(v19, v22, QueueModelFlag);
+		}
+	}
+	timer = (double)MissedFrames_B * actionList->speed + v24;
+	if ((actionList->mode & 1) != 0)
+	{
+		if (timer < (double)frame)
+		{
+		LABEL_46:
+			if (light >= 0 && (actionListMode & 0x20) == 0)
+			{
+				Direct3D_PerformLighting(0);
+			}
+			event->action.timer = timer;
+			return;
+		}
+		if (!actionList->next)
+		{
+			timer = timer - frame;
+			goto LABEL_46;
+		}
+	}
+	else if (frame - 1.0 > timer)
+	{
+		goto LABEL_46;
+	}
+	event->action.old = actionList;
+	event->action.list = actionList->next;
+LABEL_45:
+	timer = 0.0;
+	goto LABEL_46;
+
+
 }
 
 FunctionPointer(void, sub_49F0B0, (EntityData1* a1, struct_a3* a2), 0x49F0B0);
@@ -305,7 +599,7 @@ void __cdecl Sonic_Display_r(ObjectMaster* obj)
 			njPushMatrix(nullptr);
 			njMultiMatrix(nullptr, posmatrix);
 			if (*((_DWORD*)data1->field_3C + 16))
-				DrawEventAction(data1);
+				DrawEventAction_r((taskwk*)data1, dspl);
 			else
 			{
 				NJS_ACTION* action;
@@ -337,6 +631,7 @@ void __cdecl Sonic_Display_r(ObjectMaster* obj)
 		ClampGlobalColorThing_Thing();
 		RestoreConstantAttr();
 		Direct3D_ResetZFunc();
+
 		if (IsGamePaused())
 			sub_49F0B0(data1, &data2->_struct_a3);
 	}
@@ -466,6 +761,12 @@ extern "C"
 			if (labels.find(i->second) != labels.cend())
 				modelmap[std::stol(i->first)] = (NJS_OBJECT*)labels[i->second];
 		delete mdlini;
+
+		const IniFile* config = new IniFile(std::string(path) + "\\config.ini");
+		isJiggle = config->getBool("General", "isJiggle", true);
+		delete config;
+
+
 		for (int i = 0; i < 79; i++)
 			if (modelmap.find(i) != modelmap.cend())
 				modelmap2[SONIC_OBJECTS[i]] = modelmap[i];
