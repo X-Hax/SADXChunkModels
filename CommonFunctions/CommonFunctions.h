@@ -67,6 +67,7 @@ bool FindModels(std::string& mdlpath, std::unordered_map<std::string, void*>& la
 JiggleInfo* __cdecl InitJiggle(NJS_OBJECT* arg0);
 void FreeJiggle(JiggleInfo* a1);
 void ApplyJiggle(JiggleInfo* a1);
+void njCnkActionLink(NJS_ACTION_LINK* action, float frame, int flag);
 
 template<int N>
 void ProcessAnimList(AnimData_t (&animlist)[N], const std::string& mtnpath, std::unordered_map<int, NJS_OBJECT*>& modelmap)

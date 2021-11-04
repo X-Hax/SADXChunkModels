@@ -5,6 +5,7 @@
 #include "framework.h"
 #include "ModelInfo.h"
 #include "CommonFunctions.h"
+#include "CommonSADX.h"
 
 FastcallFunctionPointer(void, sub_7917F0, (Sint32* a1, Sint16* a2), 0x7917F0);
 void DrawChunkModel(NJS_CNK_MODEL* model)
@@ -40,6 +41,11 @@ void NullModel(NJS_MODEL_SADX*, int, int)
 void njNullAction(NJS_ACTION* action, float frame)
 {
 	DisplayAnimationFrame(action, frame, (QueuedModelFlagsB)0, 0, NullModel);
+}
+
+void njCnkActionLink(NJS_ACTION_LINK* action, float frame, int flag)
+{
+	late_ActionLinkEx_(action, frame, (QueuedModelFlagsB)flag, 0.0, (void(__cdecl*)(NJS_MODEL_SADX*, int, int))DrawChunkModel);
 }
 
 void SetupWorldMatrix()
