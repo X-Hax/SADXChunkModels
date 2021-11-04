@@ -60,7 +60,7 @@ void DrawAmyModel(CharObj2* a2, int animNum, NJS_ACTION* action)
 FunctionPointer(void, sub_4187D0, (EntityData1* a1), 0x4187D0);
 FunctionPointer(void, sub_49F0B0, (EntityData1* a1, struct_a3* a2), 0x49F0B0);
 FunctionPointer(int, sub_42FB00, (), 0x42FB00);
-auto sub_486CD0 = GenerateUsercallCallWrapper<signed int (*)(CharObj2* a1, EntityData1* a2)>(rEAX, 0x486CD0, rECX, rESI);
+auto sub_486CD0 = GenerateUsercallWrapper<signed int (*)(CharObj2* a1, EntityData1* a2)>(rEAX, 0x486CD0, rECX, rESI);
 void __cdecl Amy_Display_r(ObjectMaster* obj)
 {
 	CharObj2* data2; // edi

@@ -66,7 +66,9 @@
       <AdditionalDependencies>..\bin\ModLoaderCommon.lib;..\bin\libmodutils.lib;$(OutputPath)CommonFunctions.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /b /y "$(TargetPath)" "C:\SONICADVENTUREDX\mods\sa2sonic\SA2Sonic.dll"</Command>
+      <Command>
+      </Command>
+      <Message>copy /b /y "$(TargetPath)" "C:\SONICADVENTUREDX\mods\sa2sonic\SA2Sonic.dll"</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
