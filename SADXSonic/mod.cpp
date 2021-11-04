@@ -281,6 +281,14 @@ void CNK_DrawSonicAction(uint8_t id, NJS_ACTION* action, float frame, int queueM
 	njPopMatrix(1);
 }
 
+void DrawEventAction_Label46(int light, char actionListMode, int timer) {
+	if (light >= 0 && (actionListMode & 0x20) == 0)
+	{
+		Direct3D_PerformLighting(0);
+	}
+	return;
+}
+
 void __cdecl DrawEventAction_r(taskwk* data1, int light)
 {
 	eventwk* event; // ebp
@@ -301,7 +309,7 @@ void __cdecl DrawEventAction_r(taskwk* data1, int light)
 	double v16; // st7
 	double v17; // st7
 	int j; // eax
-	NJS_ACTION* v19; // [esp-4h] [ebp-44h]
+	NJS_ACTION* actionlistMotion; // [esp-4h] [ebp-44h]
 	int v20; // [esp+0h] [ebp-40h]
 	int v21; // [esp+0h] [ebp-40h]
 	float v22; // [esp+0h] [ebp-40h]
@@ -369,27 +377,29 @@ void __cdecl DrawEventAction_r(taskwk* data1, int light)
 		}
 		v32 = 0.0;
 		i = 0;
-		while (data1 != taskwkPtrs[i])
-		{
-			if (++i >= 8)
+
+		for (i = 0; i < 8; i++) {
+
+			if (data1 != taskwkPtrs[i])
 			{
-				goto OutOfRange;
+				continue;
 			}
+
+			v12 = floor(v24);
+			if ((double)(unsigned __int8)actionList->linkframe <= v12 + v12)
+			{
+				v14 = v32;
+				v13 = v30;
+			}
+			else
+			{
+				v14 = frameOld;
+				v13 = a3;
+			}
+			EPJoinVertexes(i, actionList->action.object, v13, v14);
+			actionMode = actionListMode;
 		}
-		v12 = floor(v24);
-		if ((double)(unsigned __int8)actionList->linkframe <= v12 + v12)
-		{
-			v14 = v32;
-			v13 = v30;
-		}
-		else
-		{
-			v14 = frameOld;
-			v13 = a3;
-		}
-		EPJoinVertexes(i, actionList->action.object, v13, v14);
-		actionMode = actionListMode;
-	OutOfRange:
+
 		v16 = v24 + 1.0;
 		v15 = (unsigned __int8)actionList->linkframe + 1;
 		if ((actionMode & 8) != 0)
@@ -415,23 +425,27 @@ void __cdecl DrawEventAction_r(taskwk* data1, int light)
 		timer = v17;
 		if ((double)(unsigned __int8)actionList->linkframe > floor(v17))
 		{
-			goto LABEL_46;
+			DrawEventAction_Label46(light, actionListMode, timer);
+			event->action.timer = timer;
+			return;
 		}
 		FreeMemory(actionOldList);
 		event->action.old = 0;
-		goto LABEL_45;
+		timer = 0.0;
+		DrawEventAction_Label46(light, actionListMode, timer);
+		event->action.timer = timer;
+		return;
 	}
-	j = 0;
-	while (data1 != (taskwk*)EntityData1Ptrs[j])
-	{
-		if (++j >= 8)
+	for (j = 0; j < 8; j++) {
+
+		if (data1 != taskwkPtrs[j])
 		{
-			goto OutOfRange_Again;
+			continue;
 		}
+		EPJoinVertexes(j, actionList->action.object, actionList->action.motion, event->action.timer);
+		actionMode = actionListMode;
 	}
-	EPJoinVertexes(j, actionList->action.object, actionList->action.motion, event->action.timer);
-	actionMode = actionListMode;
-OutOfRange_Again:
+
 	v22 = event->action.timer;
 	if ((actionMode & 8) != 0)
 	{
@@ -440,15 +454,15 @@ OutOfRange_Again:
 	}
 	else
 	{
-		v19 = &actionList->action;
+		actionlistMotion = &actionList->action;
 		if ((actionMode & 4) != 0)
 		{
 			//njCnkAction_Queue(v19, v22, QueueModelFlag);
-			CNK_DrawSonicAction(pid, v19, v22, QueueModelFlag);
+			CNK_DrawSonicAction(pid, actionlistMotion, v22, QueueModelFlag);
 		}
 		else
 		{
-			CNK_DrawSonicAction(pid, v19, v22, QueueModelFlag);
+			CNK_DrawSonicAction(pid, actionlistMotion, v22, QueueModelFlag);
 			//njCnkAction_Queue(v19, v22, QueueModelFlag);
 		}
 	}
@@ -457,7 +471,7 @@ OutOfRange_Again:
 	{
 		if (timer < (double)frame)
 		{
-		LABEL_46:
+
 			if (light >= 0 && (actionListMode & 0x20) == 0)
 			{
 				Direct3D_PerformLighting(0);
@@ -468,20 +482,24 @@ OutOfRange_Again:
 		if (!actionList->next)
 		{
 			timer = timer - frame;
-			goto LABEL_46;
+			DrawEventAction_Label46(light, actionListMode, timer);
+			event->action.timer = timer;
+			return;
 		}
 	}
 	else if (frame - 1.0 > timer)
 	{
-		goto LABEL_46;
+		DrawEventAction_Label46(light, actionListMode, timer);
+		event->action.timer = timer;
+		return;
 	}
 	event->action.old = actionList;
 	event->action.list = actionList->next;
-LABEL_45:
+
 	timer = 0.0;
-	goto LABEL_46;
-
-
+	DrawEventAction_Label46(light, actionListMode, timer);
+	event->action.timer = timer;
+	return;
 }
 
 FunctionPointer(void, sub_49F0B0, (EntityData1* a1, struct_a3* a2), 0x49F0B0);
