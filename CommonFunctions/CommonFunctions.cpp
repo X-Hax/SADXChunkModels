@@ -79,3 +79,12 @@ bool FindModels(std::string& mdlpath, std::unordered_map<std::string, void*>& la
 	FindClose(hFind);
 	return true;
 }
+
+
+void DrawEventAction_Label46(int light, char actionListMode, int timer) {
+	if (light >= 0 && (actionListMode & 0x20) == 0)
+	{
+		Direct3D_PerformLighting(0);
+	}
+	return;
+}

@@ -281,14 +281,6 @@ void CNK_DrawSonicAction(uint8_t id, NJS_ACTION* action, float frame, int queueM
 	njPopMatrix(1);
 }
 
-void DrawEventAction_Label46(int light, char actionListMode, int timer) {
-	if (light >= 0 && (actionListMode & 0x20) == 0)
-	{
-		Direct3D_PerformLighting(0);
-	}
-	return;
-}
-
 void __cdecl DrawEventAction_r(taskwk* data1, int light)
 {
 	eventwk* event; // ebp

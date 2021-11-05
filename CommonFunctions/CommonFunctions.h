@@ -68,6 +68,7 @@ JiggleInfo* __cdecl InitJiggle(NJS_OBJECT* arg0);
 void FreeJiggle(JiggleInfo* a1);
 void ApplyJiggle(JiggleInfo* a1);
 void njCnkActionLinkEX(NJS_ACTION_LINK* action, float frame, int flag);
+void DrawEventAction_Label46(int light, char actionListMode, int timer);
 
 template<int N>
 void ProcessAnimList(AnimData_t (&animlist)[N], const std::string& mtnpath, std::unordered_map<int, NJS_OBJECT*>& modelmap)

@@ -58,6 +58,240 @@ void DrawAmyModel(CharObj2* a2, int animNum, NJS_ACTION* action)
 	njPopMatrix(1);
 }
 
+
+
+
+void CNK_DrawAmyAction(uint8_t id, NJS_ACTION* action, float frame, int queueModelFlag)
+{
+	CharObj2* co2 = CharObj2Ptrs[id];
+
+	njPushMatrix(nullptr);
+	SetupWorldMatrix();
+	Direct3D_SetChunkModelRenderState();
+	NJS_ACTION act2 = *action;
+	act2.object = modelmap2[act2.object];
+
+	DrawQueueDepthBias = -5952.0;
+	njCnkAction_Queue(&act2, frame,(QueuedModelFlagsB)queueModelFlag);
+	DrawQueueDepthBias = 0.0;
+	Direct3D_UnsetChunkModelRenderState();
+	njPopMatrix(1);
+}
+
+void __cdecl DrawEventAction_r(taskwk* data1, int light)
+{
+	eventwk* event; // ebp
+	EVENT_ACTION_LIST* actionOld; // edi
+	EVENT_ACTION_LIST* actionList; // esi
+	NJS_TEXLIST* texlist; // eax
+	char actionMode; // cl
+	QueuedModelFlagsB QueueModelFlag; // bl
+	NJS_MOTION* OldMotion; // eax
+	//obj* v9; // eax
+	obj* v9;
+	_BOOL1 v10; // zf
+	int i; // edi
+	double v12; // st7
+	NJS_MOTION* v13; // edx
+	float v14; // ecx
+	int v15; // edx
+	double v16; // st7
+	double v17; // st7
+	int j; // eax
+	NJS_ACTION* actionlistMotion; // [esp-4h] [ebp-44h]
+	int v20; // [esp+0h] [ebp-40h]
+	int v21; // [esp+0h] [ebp-40h]
+	float v22; // [esp+0h] [ebp-40h]
+	char actionListMode; // [esp+1Bh] [ebp-25h]
+	float v24; // [esp+1Ch] [ebp-24h]
+	float timer; // [esp+1Ch] [ebp-24h]
+	float frame; // [esp+20h] [ebp-20h]
+	EVENT_ACTION_LIST* actionOldList; // [esp+24h] [ebp-1Ch]
+	NJS_ACTION* v28; // [esp+28h] [ebp-18h] BYREF
+	NJS_MOTION* a3; // [esp+30h] [ebp-10h] BYREF
+	NJS_MOTION* v30; // [esp+34h] [ebp-Ch]
+	float frameOld; // [esp+38h] [ebp-8h]
+	float v32; // [esp+3Ch] [ebp-4h]
+
+	event = (eventwk*)data1->ewp;
+
+	if (MissedFrames || !event)
+		return;
+
+	actionList = event->action.list;
+	actionOld = event->action.old;
+	actionOldList = actionOld;
+
+	if (!actionList)
+		return;
+
+	uint8_t pid = data1->counter.b[0];
+	actionMode = actionList->mode;
+	frame = (float)actionList->action.motion->nbFrame;
+	v24 = event->action.timer;
+	texlist = actionList->texlist;
+	unsigned __int8 flag = ((unsigned __int8)actionList->mode >> 4) & 0xD;
+	QueueModelFlag = (QueuedModelFlagsB)flag;
+	actionListMode = actionList->mode;
+	if (texlist)
+	{
+		njSetTexture(texlist);
+		actionMode = actionListMode;
+	}
+	if (light >= 0 && (actionMode & 0x20) == 0)
+	{
+		Direct3D_PerformLighting(light);
+		actionMode = actionListMode;
+	}
+	if (actionOld && actionList->linkframe)
+	{
+
+		v28 = new NJS_ACTION();
+		v9 = actionList->action.object;
+		v28->object = v9;
+		v30 = actionList->action.motion;
+		v28->motion = v30;
+		v10 = (actionOld->mode & 1) == 0;
+
+		OldMotion = actionOld->action.motion;
+		a3 = (NJS_MOTION*)OldMotion;
+
+		if (v10)
+		{
+			frameOld = (float)((unsigned int)&OldMotion->nbFrame - 1);
+		}
+		else
+		{
+			frameOld = 0.0;
+		}
+		v32 = 0.0;
+		i = 0;
+
+		for (i = 0; i < 8; i++) {
+
+			if (data1 != taskwkPtrs[i])
+			{
+				continue;
+			}
+
+			v12 = floor(v24);
+			if ((double)(unsigned __int8)actionList->linkframe <= v12 + v12)
+			{
+				v14 = v32;
+				v13 = v30;
+			}
+			else
+			{
+				v14 = frameOld;
+				v13 = a3;
+			}
+			EPJoinVertexes(i, actionList->action.object, v13, v14);
+			actionMode = actionListMode;
+		}
+
+		v16 = v24 + 1.0;
+		v15 = (unsigned __int8)actionList->linkframe + 1;
+		if ((actionMode & 8) != 0)
+		{
+			DrawEventAction((EntityData1*)data1);
+			return;
+		}
+		else
+		{
+			*(float*)&v21 = v16 / (double)v15;
+			if ((actionMode & 4) != 0) {
+
+				DrawEventAction((EntityData1*)data1);
+				return;
+			}
+			else
+			{
+				DrawEventAction((EntityData1*)data1);
+				return;
+			}
+		}
+		v17 = (double)MissedFrames_B + v24;
+		timer = v17;
+		if ((double)(unsigned __int8)actionList->linkframe > floor(v17))
+		{
+			DrawEventAction_Label46(light, actionListMode, timer);
+			event->action.timer = timer;
+			return;
+		}
+		FreeMemory(actionOldList);
+		event->action.old = 0;
+		timer = 0.0;
+		DrawEventAction_Label46(light, actionListMode, timer);
+		event->action.timer = timer;
+		return;
+	}
+	for (j = 0; j < 8; j++) {
+
+		if (data1 != taskwkPtrs[j])
+		{
+			continue;
+		}
+		EPJoinVertexes(j, actionList->action.object, actionList->action.motion, event->action.timer);
+		actionMode = actionListMode;
+	}
+
+	v22 = event->action.timer;
+	if ((actionMode & 8) != 0)
+	{
+		//njCnkAction_Queue(&actionList->action, v22, QueueModelFlag);
+		CNK_DrawAmyAction(pid, &actionList->action, v22, QueueModelFlag);
+	}
+	else
+	{
+		actionlistMotion = &actionList->action;
+		if ((actionMode & 4) != 0)
+		{
+			//njCnkAction_Queue(v19, v22, QueueModelFlag);
+			CNK_DrawAmyAction(pid, actionlistMotion, v22, QueueModelFlag);
+		}
+		else
+		{
+			CNK_DrawAmyAction(pid, actionlistMotion, v22, QueueModelFlag);
+			//njCnkAction_Queue(v19, v22, QueueModelFlag);
+		}
+	}
+	timer = (double)MissedFrames_B * actionList->speed + v24;
+	if ((actionList->mode & 1) != 0)
+	{
+		if (timer < (double)frame)
+		{
+
+			if (light >= 0 && (actionListMode & 0x20) == 0)
+			{
+				Direct3D_PerformLighting(0);
+			}
+			event->action.timer = timer;
+			return;
+		}
+		if (!actionList->next)
+		{
+			timer = timer - frame;
+			DrawEventAction_Label46(light, actionListMode, timer);
+			event->action.timer = timer;
+			return;
+		}
+	}
+	else if (frame - 1.0 > timer)
+	{
+		DrawEventAction_Label46(light, actionListMode, timer);
+		event->action.timer = timer;
+		return;
+	}
+	event->action.old = actionList;
+	event->action.list = actionList->next;
+
+	timer = 0.0;
+	DrawEventAction_Label46(light, actionListMode, timer);
+	event->action.timer = timer;
+	return;
+}
+
+
 FunctionPointer(void, sub_49F0B0, (EntityData1* a1, struct_a3* a2), 0x49F0B0);
 FunctionPointer(int, sub_42FB00, (), 0x42FB00);
 auto sub_486CD0 = GenerateUsercallWrapper<signed int (*)(CharObj2* a1, EntityData1* a2)>(rEAX, 0x486CD0, rECX, rESI);
@@ -213,7 +447,7 @@ LABEL_7:
 			}
 			if (*((_DWORD*)data1->field_3C + 16))
 			{
-				DrawEventAction(data1);
+				DrawEventAction_r((taskwk*)data1, dspl);
 			}
 			else if (Controllers[0].HeldButtons & Buttons_X && data1->Action == 53)
 			{
