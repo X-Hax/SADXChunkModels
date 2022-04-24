@@ -267,7 +267,7 @@ void __cdecl Knuckles_Display_r(ObjectMaster* obj_1)
 				}
 				if (v3 == 14)
 				{
-					if (data1->Status & (Status_Unknown1 | Status_Ground))
+					if (data1->Status & (Status_OnColli | Status_Ground))
 					{
 						vd.x = 0.0;
 						vd.y = -1.0;

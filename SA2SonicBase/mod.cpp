@@ -316,7 +316,7 @@ void __cdecl Sonic_Display_r(ObjectMaster* obj)
 				njRotateY(posmatrix, (unsigned __int16)(-0x8000 - LOWORD(data1->Rotation.y)));
 			if (v4 == 14)
 			{
-				if (data1->Status & (Status_Unknown1 | Status_Ground))
+				if (data1->Status & (Status_OnColli | Status_Ground))
 				{
 					a2.x = 0;
 					a2.y = -1;
