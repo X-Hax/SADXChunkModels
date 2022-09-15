@@ -88,3 +88,28 @@ void DrawEventAction_Label46(int light, char actionListMode, int timer) {
 	}
 	return;
 }
+
+
+//Series of hack to fix Sonic drop / throw object.
+
+float pickAnimFrame = 6.0f;
+//fix animation frame check for object throw / drop etc.
+void SonicObjectAnimAdjust()
+{
+	//pick obj
+	WriteData((float**)0x495327, &pickAnimFrame);
+	//throw obj on ground (the sa2 animation is way too short so we reduce the check to 6 frames)
+	WriteData<1>((int*)0x493365, 0x40);
+	WriteData<1>((int*)0x493364, 0xC0);
+}
+
+void FixSonicDropThrowObject()
+{
+	//change condition from "==" to ">=" or "<=" depending on the situation
+	WriteData<1>((int*)0x493401, 0x77);	//0x76
+	WriteData<1>((int*)0x493233, 0x77);
+	WriteData<1>((int*)0x49324A, 0x87);
+
+	WriteData<1>((int*)0x493366, 0x7D);
+	WriteData<1>((int*)0x49337c, 0x77);
+}

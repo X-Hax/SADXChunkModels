@@ -523,6 +523,8 @@ extern "C"
 		WriteData<2>((void*)0x4916A5, 0x90u); // disable metal's weird tilting thing
 		WriteData((char*)0x49BE22, (char)0xEB);
 		WriteJump(Sonic_Jiggle_Main, Sonic_Jiggle_Main_r); // remove this line to disable the jiggle effect
+		FixSonicDropThrowObject();
+		SonicObjectAnimAdjust();
 	}
 
 	__declspec(dllexport) ModInfo SADXModInfo = { ModLoaderVer };
